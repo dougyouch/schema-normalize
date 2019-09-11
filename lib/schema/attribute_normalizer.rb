@@ -10,9 +10,9 @@ module Schema
       @normalizations << options.merge(method: method)
     end
 
-    def normalize_model_attribute(model, field)
-      value = normalize(model, model.public_send(field))
-      model.public_send("#{field}=", value)
+    def normalize_model_attribute(model, attribute)
+      value = normalize(model, model.public_send(attribute))
+      model.public_send("#{attribute}=", value)
     end
 
     def normalize(model, value)
