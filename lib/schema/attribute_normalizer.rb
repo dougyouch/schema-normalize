@@ -6,8 +6,13 @@ module Schema
       @normalizations = []
     end
 
+    def add(method, options = {})
+      @normalizations << options.merge(method: method)
+    end
+
     def normalize_model_attribute(model, field)
-      value = model.send(field)
+      value = normalize(model, model.public_send(field))
+      model.public_send("#{field}=", value)
     end
 
     def normalize(model, value)
@@ -29,9 +34,9 @@ module Schema
           kls = normalization[:class] || Object.const_get(normalization[:class_name])
           arguments = [value]
           arguments += normalization[:args] if normalization[:args]
-          call_method(kls, normalization[:method], arguments)
+          call_method(kls, normalization[:with], arguments)
         else
-          call_method(model, normalization[:method], [value])
+          call_method(model, normalization[:with], [value])
         end
       else
         call_method(value, normalization[:method], normalization[:args])
