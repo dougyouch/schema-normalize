@@ -2,22 +2,36 @@
 
 module Schema
   module Normalize
-     def self.included(base)
+    def self.included(base)
       base.extend InheritanceHelper::Methods
       base.extend ClassMethods
     end
 
-     module ClassMethods
-       def normalized_attributes
-         {}.freeze
-       end
+    module ClassMethods
+      def schema_normalizations
+        [].freeze
+      end
 
-       def normalize(attribute_name, method_name, options = {})
-         if method_name.is_a?(Hash)
-           options = method_name
-           method_name = nil
-         end
-       end
-     end
+      def create_schema_model_normalizer
+        normalizer = ::Schema::ModelNormalizer.new
+        schema_normalizations.each do |(attribute_name, method_name, options)|
+          normalizer.add(attribute_name, method_name, options)
+        end
+        normalizer
+      end
+
+      def schema_model_normalizer
+        @schema_model_normalizer ||= create_schema_model_normalizer
+      end
+
+      def normalize(attribute_name, method_name, options = {})
+        new_value = schema_normalizations.dup << [attribute_name, method_name, options]
+        redefine_class_method(:schema_normalizations, new_value)
+      end
+    end
+
+    def normalize
+      self.class.schema_model_normalizer.normalize(self)
+    end
   end
 end
