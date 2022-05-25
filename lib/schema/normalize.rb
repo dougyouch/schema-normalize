@@ -24,8 +24,8 @@ module Schema
         @schema_model_normalizer ||= create_schema_model_normalizer
       end
 
-      def normalize(attribute_name, method_name, options = {})
-        new_value = schema_normalizations.dup << [attribute_name, method_name, options]
+      def normalize(attribute_name, method_name = nil, options = {}, &block)
+        new_value = schema_normalizations.dup << [attribute_name, method_name || block, options]
         redefine_class_method(:schema_normalizations, new_value)
       end
     end

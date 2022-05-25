@@ -25,7 +25,7 @@ describe Schema::Normalize do
     describe 'inheritance' do
       let(:model_class_other) do
         Class.new(model_class) do
-          normalize :other_name, :lstrip
+          normalize(:other_name, &:lstrip)
         end
       end
 
