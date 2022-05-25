@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'schema-normalize'
-  s.version     = '0.1.0'
+  s.version     = '0.1.2'
   s.licenses    = ['MIT']
   s.summary     = 'Schema Normalize'
   s.description = 'Easy way to normalize attributes'
